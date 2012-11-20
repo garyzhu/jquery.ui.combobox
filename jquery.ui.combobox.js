@@ -115,9 +115,9 @@
                 
                 var items = $("li", ul).live("mouseover mouseout", function( event ) {
                 	if (event.type == "mouseover"){
-                		self.menu.activate( event, $(this));
+                		self.menu.focus( event, $(this));
                 	} else {
-                		self.menu.deactivate();
+                		self.menu.blur();
                 	}
                 });
                 for(var i=0; i<items.length; i++){
