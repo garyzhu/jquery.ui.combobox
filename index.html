@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Test Page</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
+<script type="text/javascript" src="jquery.ui.combobox.js"></script>
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css" />
+</head>
+<body>
+
+<select id="cb">
+</select>
+
+<script type="text/javascript">
+
+for(var i=1000; i<2000; i++) {
+    var n = $("<option value="+i+">"+i+"</option>");
+    $("#cb").append(n);	
+}
+
+$("#cb").combobox();
+
+</script>
+
+</body>
+</html>
