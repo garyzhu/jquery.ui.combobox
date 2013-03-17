@@ -55,7 +55,7 @@
                         return;
                     }
                     // when user clicks the show all button, we display the cached full menu
-                    var data = input.data("combobox");
+                    var data = input.data("ui-combobox");
                     clearTimeout( data.closing );
                     if (!input.isFullMenu){
                     	data._swapMenu();
@@ -79,7 +79,7 @@
     			
     			/* to better handle large lists, put in a queue and process sequentially */
     			$(document).queue(function(){
-    				var data = input.data("combobox");
+    				var data = input.data("ui-combobox");
     				if ($.isArray(data.options.source)){ 
     				    $.ui.combobox.prototype._renderFullMenu.call(data, data.options.source);
     				}else if (typeof data.options.source === "string") {
@@ -96,10 +96,10 @@
     		_renderFullMenu: function(source){
     			var self = this,
     			    input = this.element,
-                    ul = input.data( "combobox" ).menu.element,
+                    ul = input.data( "ui-combobox" ).menu.element,
                     lis = [];
     			source = this._normalize(source); 
-                input.data( "combobox" ).menuAll = input.data( "combobox" ).menu.element.clone(true).appendTo("body");
+                input.data( "ui-combobox" ).menuAll = input.data( "ui-combobox" ).menu.element.clone(true).appendTo("body");
                 for(var i=0; i<source.length; i++){
                 	var item = source[i],
                 	    label = item.label;
@@ -113,7 +113,7 @@
                 ul[0].innerHTML = lis.join("");
                 this._resizeMenu();
                 
-                var items = $("li", ul).live("mouseover mouseout", function( event ) {
+                var items = $("li", ul).on("mouseover", "mouseout", function( event ) {
                 	if (event.type == "mouseover"){
                 		self.menu.focus( event, $(this));
                 	} else {
@@ -121,7 +121,7 @@
                 	}
                 });
                 for(var i=0; i<items.length; i++){
-                    $(items[i]).data( "item.autocomplete", source[i]);
+                    $(items[i]).data( "ui-autocomplete-item", source[i]);
                 }
                 input.isFullMenu = true;
                 // full menu has been rendered, now we can enable the show all button.
@@ -143,7 +143,7 @@
                 	}
                 }
                 return $( "<li></li>" )
-                    .data( "item.autocomplete", item )
+                    .data( "ui-autocomplete-item", item )
                     .append( "<a>" + label + "</a>" )
                     .appendTo( ul );
             },
@@ -151,7 +151,7 @@
             /* overwrite. to cleanup additional stuff that was added */
             destroy: function() {
             	if (this.element.is("SELECT")){
-            		this.input.data("combobox").menuAll.remove();
+            		this.input.data("ui-combobox").menuAll.remove();
             		this.input.remove();
             		this.element.removeData().show();
             		return;
@@ -191,7 +191,7 @@
                         }else {
                         	this.element.val( "" );
                         }
-                        $(event.target).data("combobox").previous = null;  // this will force a change event
+                        $(event.target).data("ui-combobox").previous = null;  // this will force a change event
                     }
                 }                
             	// super()
@@ -200,7 +200,7 @@
             
             _swapMenu: function(){
             	var input = this.element, 
-            	    data = input.data("combobox"),
+            	    data = input.data("ui-combobox"),
             	    tmp = data.menuAll;
                 data.menuAll = data.menu.element.hide();
                 data.menu.element = tmp;
