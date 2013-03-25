@@ -49,17 +49,11 @@
                 .removeClass( "ui-corner-all" )
                 .addClass( "ui-corner-right ui-button-icon" )
                 .click(function(event) {
-                    // close if already visible
-                    if ( input.combobox( "widget" ).is( ":visible" ) ) {
-                        input.combobox( "close" );
-                        return;
-                    }
                     // when user clicks the show all button, we display the cached full menu
                     var data = input.data("ui-combobox");
                     clearTimeout( data.closing );
                     if (!input.isFullMenu){
                     	data._swapMenu();
-                        input.isFullMenu = true;
                     }
                     /* input/select that are initially hidden (display=none, i.e. second level menus), 
                        will not have position cordinates until they are visible. */
@@ -99,7 +93,7 @@
                     ul = input.data( "ui-combobox" ).menu.element,
                     lis = [];
     			source = this._normalize(source); 
-                input.data( "ui-combobox" ).menuAll = input.data( "ui-combobox" ).menu.element.clone(true).appendTo("body");
+                input.data( "ui-combobox" ).menuAll = input.data( "ui-combobox" ).menu.element.clone(true).appendTo("body")[0];
                 for(var i=0; i<source.length; i++){
                 	var item = source[i],
                 	    label = item.label;
@@ -124,6 +118,7 @@
                     $(items[i]).data( "ui-autocomplete-item", source[i]);
                 }
                 input.isFullMenu = true;
+                this._swapMenu();
                 // full menu has been rendered, now we can enable the show all button.
                 self.button.button("enable");
                 setTimeout(function(){
@@ -148,10 +143,18 @@
                     .appendTo( ul );
             },
             
+            close: function() {
+               if (this.element.isFullMenu) {
+            	   this._swapMenu();
+               }
+               // super()
+               $.ui.autocomplete.prototype.close.call(this);
+            },
+            
             /* overwrite. to cleanup additional stuff that was added */
             destroy: function() {
             	if (this.element.is("SELECT")){
-            		this.input.data("ui-combobox").menuAll.remove();
+            		this.input.removeData("ui-combobox", "menuAll");
             		this.input.remove();
             		this.element.removeData().show();
             		return;
@@ -168,7 +171,6 @@
             	var input = this.element;
                 if (input.isFullMenu){
                 	this._swapMenu();
-                    input.isFullMenu = false;
                 }
                 // super()
                 $.ui.autocomplete.prototype.search.call(this, value, event);
@@ -202,8 +204,9 @@
             	var input = this.element, 
             	    data = input.data("ui-combobox"),
             	    tmp = data.menuAll;
-                data.menuAll = data.menu.element.hide();
-                data.menu.element = tmp;
+                data.menuAll = data.menu.element.hide()[0];
+                data.menu.element[0] = tmp;
+                input.isFullMenu = !input.isFullMenu;
             },
             
             /* build the source array from the options of the select element */
